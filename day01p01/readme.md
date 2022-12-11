@@ -28,20 +28,22 @@ inventory (if any) by a blank line.
 For example, suppose the Elves finish writing their items' Calories and end up
 with the following list:
 
-1000
-2000
-3000
+```
+1000 
+2000 
+3000 
 
-4000
+4000 
 
-5000
-6000
+5000 
+6000 
 
 7000
-8000
+8000 
 9000
 
 10000
+```
 
 This list represents the Calories of the food carried by five Elves:
 
@@ -61,4 +63,3 @@ fourth Elf).
 
 Find the Elf carrying the most Calories. How many total Calories is that Elf
 carrying?
-
