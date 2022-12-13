@@ -1,7 +1,7 @@
 import numpy as np
 
 # read input
-with open('input', 'r') as file:
+with open('input.txt', 'r') as file:
     data = file.read()
 
 # split at every empty line (= two new lines)
