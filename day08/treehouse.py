@@ -41,11 +41,58 @@ def num_visible_trees(M, dim):
 
     return count
 
+def scenic_tree(M, dim, i, j):
+
+    h = M[i,j]
+
+    su = i 
+    for l in range(i):
+        if M[i-l-1,j] >= h:
+            su = l +1
+            break
+
+    sd = dim[0] - i - 1
+    for r in range(dim[0]-i-1):
+        if M[i+r+1,j] >= h:
+            sd = r + 1
+            break
+
+    sl = j 
+    for l in range(j):
+        if M[i,j-l-1] >= h:
+            sl = l + 1
+            break
+
+    sr = dim[1] - j - 1
+    for r in range(dim[1]-j-1):
+        if M[i,j+1+r] >= h:
+            sr = r + 1
+            break
+    # print(su, sl, sd, sr)
+    return sl*sr*sd*su
+
+def scenic_score(M, dim):
+
+    score = np.zeros_like(M)
+
+    for i in range(1, dim[0]-1):
+        for j in range(1, dim[1]-1):
+            score[i,j] = scenic_tree(M, dim, i, j)
+    print(score)
+
+    return np.amax(score)
+
+
 
 
 if __name__ == '__main__':
     data = aoc.get_input('input.txt')
     M, dim = parse_input(data)
     c = num_visible_trees(M, dim)
-    print(c)
+    print(f'Part I: {c} trees')
+
+    high = scenic_score(M, dim)
+    print(f'Part II: highest scenic score is {high}')
+
+    # print(scenic_tree(M, dim, 3, 2))
 
