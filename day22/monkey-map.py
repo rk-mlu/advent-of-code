@@ -88,32 +88,30 @@ class Walker:
                     z -= self.board[new_pos]
 
     def move2(self, inst):
-        # move walker in part I
+        # move walker in part II
+        self.face2dir()
         if inst == 'R':
             self.face = (self.face + 1) % 4
-            self.face2dir()
         if inst == 'L':
             self.face = (self.face - 1) % 4
-            self.face2dir()
         if type(inst) is int:
-            z = inst
             new_pos = (self.pos[0], self.pos[1])
-            new_face = self.face
-            while z > 0:
+            new_face = self.face + 0
+            for z in range(inst):
                 new_pos = ((new_pos[0] + self.dir[0]) % self.row,
                             (new_pos[1] + self.dir[1]) % self.col)
                 if self.board[new_pos] == 0:
                     new_pos, new_face = self.wrapping()
+                    print(f'Wrapping: {self.pos} with face {self.face} to {new_pos} in {new_face}: {self.board[new_pos]}')
                 if self.board[new_pos] == -1:
                     break
                 if self.board[new_pos] == 1:
                     self.pos = new_pos
                     self.face = new_face
                     self.face2dir()
-                    z -= self.board[new_pos]
 
     def wrapping(self):
-        N = self.col // 3
+        N = 50
         if self.pos[0] < N and self.pos[1] == N and self.face == 2:            
             # Leave 1 and enter 5
             new_pos = (3*N - self.pos[0] - 1, 0)
@@ -158,7 +156,7 @@ class Walker:
             # leave 3 and enter 5
             new_pos = (2*N, self.pos[0] - N)
             new_face = 1
-        if self.pos[0] == 2*N and self.pos[1] <= N and self.face == 3:            
+        if self.pos[0] == 2*N and self.pos[1] < N and self.face == 3:            
             # leave 5 and enter 3
             new_pos = (N + self.pos[1], N)
             new_face = 0
@@ -197,6 +195,5 @@ if __name__ == '__main__':
     # path2 = ['L', 1, 'R', 'R', 1]
     for inst in path:
         walker2.move2(inst)
-        print(walker2)
 
     print(f'Part II: The password is {walker2.pswd()}')
