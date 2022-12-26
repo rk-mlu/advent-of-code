@@ -36,7 +36,8 @@ def parsing(data):
             s = ''
             instructions.append(c)
         else :
-             s += c
+            s += c
+    instructions.append(int(s))
     
     return board, size, instructions
 
@@ -48,6 +49,7 @@ class Walker:
         self.board = board
         self.row = board.shape[0]
         self.col = board.shape[1]
+        self.s = ''
         
     def __str__(self):
         s = f'Pos = ({self.pos[0]}, {self.pos[1]})  with face {self.face}'
@@ -89,6 +91,7 @@ class Walker:
 
     def move2(self, inst):
         # move walker in part II
+        # print(inst)
         self.face2dir()
         if inst == 'R':
             self.face = (self.face + 1) % 4
@@ -102,12 +105,12 @@ class Walker:
                             (new_pos[1] + self.dir[1]) % self.col)
                 if self.board[new_pos] == 0:
                     new_pos, new_face = self.wrapping()
-                    print(f'Wrapping: {self.pos} with face {self.face} to {new_pos} in {new_face}: {self.board[new_pos]}')
                 if self.board[new_pos] == -1:
                     break
                 if self.board[new_pos] == 1:
                     self.pos = new_pos
                     self.face = new_face
+                    self.s += str(self.pos) + '\n'
                     self.face2dir()
 
     def wrapping(self):
@@ -178,7 +181,7 @@ if __name__ == '__main__':
     # parse input
     board, size, path = parsing(data)
     # print(board)
-    print(size)
+    # print(size)
     # print(path)
 
     # Part I    
@@ -195,5 +198,8 @@ if __name__ == '__main__':
     # path2 = ['L', 1, 'R', 'R', 1]
     for inst in path:
         walker2.move2(inst)
+
+    with open('pos_2.txt', 'w') as outf:
+        outf.write(walker2.s)
 
     print(f'Part II: The password is {walker2.pswd()}')
