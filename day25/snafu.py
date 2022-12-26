@@ -1,4 +1,4 @@
-""" Advent of Code 2022 -- Day 11 -- """
+""" Advent of Code 2022 -- Day 25 -- """
 
 import aoc
 import math
@@ -63,7 +63,6 @@ def pent2snafu(p):
                 pp.insert(0, 0)
             pp[c-2] += pp[c-1] // b
             pp[c-1] = pp[c-1] % b
-
 
         m = snafurev[str(pp[c-1])]
         if m[0] < 0:
