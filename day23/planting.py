@@ -90,33 +90,66 @@ def next_round(r, garden, elves):
 
     return new_garden, new_elves, M
 
-if __name__ == '__main__':
-    # data = aoc.get_input('input.txt')                                  
-    # data = aoc.get_input('input2.txt')
-    data = aoc.get_input('input3.txt')
-    garden, elves = parsing(data)
+def ext_garden(garden, elves):
+    # check if one elf entered border
+    N = np.sum(garden[ 0, :]) > 0
+    S = np.sum(garden[-1, :]) > 0
+    W = np.sum(garden[ :, 0]) > 0
+    E = np.sum(garden[ :,-1]) > 0
     
-    fig, ax = plt.subplots()
-    ax.matshow(garden)
+    row, col = garden.shape
+    nrow = row + int(N) + int(S)
+    ncol = col + int(W) + int(E)
 
+    ext_garden = np.zeros((nrow, ncol))
+    ext_garden[int(N):row + int(N), int(W): col + int(W)] = garden
+
+    for e in elves:
+        if N:
+            e.pos = (e.pos[0] + 1, e.pos[1])
+        if W:
+            e.pos = (e.pos[0], e.pos[1] + 1)
+
+    return ext_garden, elves
+
+if __name__ == '__main__':
+    data = aoc.get_input('input.txt')                                  
+    # data = aoc.get_input('input2.txt')
+    # data = aoc.get_input('input3.txt')
+
+    garden, elves = parsing(data)
     print(garden2str(garden))
+
     # Part I    
     rounds = 10
     for r in range(rounds):
         garden, elves, mov = next_round(r, garden, elves)
         if mov == False:
             break
+        garden, elves = ext_garden(garden, elves)
         print(f'\nRound {r+1}:')
         print(garden2str(garden))
+    
+    row, col = garden.shape
+    tiles = (row-2)*(col-2) - len(elves)
+    print(f'Part I: Number of tiles is {tiles}')
+
+    
+    # Part II
+    garden, elves = parsing(data)
+    fig, ax = plt.subplots()
+    ax.matshow(garden)
+
+    moving = True
+    rds = 0 
+    while moving:
+        garden, elves, moving = next_round(rds, garden, elves)
+        garden, elves = ext_garden(garden, elves)
+        rds += 1
         
         ax.clear()
         ax.matshow(garden)
-        ax.set_title(f'Round {r+1}')
-        plt.pause(0.5)
-        
-
-
-    # plt.matshow(garden)
-    # plt.show()
+        ax.set_title(f'Round {rds}')
+        plt.pause(0.05)
     
-    # Part II
+    print(f'Part II: Number of rounds {rds}')
