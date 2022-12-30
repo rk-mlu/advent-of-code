@@ -34,25 +34,26 @@ class Expedition:
     def __init__(self, pos, mi):
         self.pos = pos
         self.mi = mi
-        self.hist = set()
+        self.hist = [] 
 
     def list_moves(self, valley):
-        moves = set()
+        moves = []
         if valley[self.pos] == 0:
             # waiting
-            moves.add(self.pos)
+            moves.append((self.pos[0], self.pos[1]))
         if valley[self.pos[0]-1, self.pos[1]] == 0:
             # move north
-            moves.add((self.pos[0]-1, self.pos[1]))
+            moves.append((self.pos[0]-1, self.pos[1]))
         if valley[self.pos[0]+1, self.pos[1]] == 0:
             # move south
-            moves.add((self.pos[0]+1, self.pos[1]))
+            moves.append((self.pos[0]+1, self.pos[1]))
         if valley[self.pos[0], self.pos[1]-1] == 0:
             # move west
-            moves.add((self.pos[0], self.pos[1]-1))
+            moves.append((self.pos[0], self.pos[1]-1))
         if valley[self.pos[0], self.pos[1]+1] == 0:
             # move east
-            moves.add((self.pos[0], self.pos[1]+1))
+            moves.append((self.pos[0], self.pos[1]+1))
+        return moves
     
     def copy(self):
         pos_copy = (self.pos[0], self.pos[1])
@@ -92,19 +93,36 @@ def parsing(data):
                 b = Blizzard((n,m), d, (row, col))
                 blizzards.add(b)
 
-    print(valley)
     return blizzards, valley
 
 def next_round(blizzards, valley, expeditions):
     new_valley = get_valley(valley.shape[0], valley.shape[1])
 
+    end = False
+
     for b in blizzards:
         b.move()
         new_valley[b.pos] = 1
-        for E in expeditions:
-            new_valley[E.pos] = -1
     
-    return new_valley, expeditions
+    new_expeditions = set()
+    for E in expeditions:
+        moves = E.list_moves(new_valley)
+        print(moves)
+        if len(moves) == 0:
+            print('no moves possible')
+        else :
+            for k in range(len(moves)):
+                E_new = Expedition(moves[k], E.mi + 1)
+                E_new.hist = E.hist.copy()
+                E_new.hist.append(moves[k])
+                new_valley[E_new.pos] = -1
+                new_expeditions.add(E_new)
+                if E_new.pos == (valley.shape[0]-1, valley.shape[1]-2):
+                    end = True
+
+    new_expeditions.union(expeditions)
+    
+    return new_valley, new_expeditions, end
 
 if __name__ == '__main__':
     # data = aoc.get_input('input.txt')                                  
@@ -117,11 +135,17 @@ if __name__ == '__main__':
     E = Expedition((0,1), 0)
     expeditions.add(E)
     valley[0,1] = -1
+    print(valley)
 
-    rounds = 10
+    rounds = 20
     for r in range(rounds):
         print(f'Round {r+1}:')
-        valley, expeditions = next_round(blizzards, valley, expeditions) 
+        valley, expeditions, end = next_round(blizzards, valley, expeditions)
         print(valley)
-    
+
+        if end:
+            break
+
+    print(f'Part I: Expedition reached the goal in round {r+1}')
+
     # Part II
