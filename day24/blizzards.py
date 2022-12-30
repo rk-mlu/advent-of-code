@@ -37,6 +37,8 @@ class Expedition:
         self.hist = [] 
 
     def list_moves(self, valley):
+        row, col = valley.shape
+
         moves = []
         if valley[self.pos] == 0:
             # waiting
@@ -44,9 +46,10 @@ class Expedition:
         if valley[self.pos[0]-1, self.pos[1]] == 0:
             # move north
             moves.append((self.pos[0]-1, self.pos[1]))
-        if valley[self.pos[0]+1, self.pos[1]] == 0:
-            # move south
-            moves.append((self.pos[0]+1, self.pos[1]))
+        if self.pos != (row-1, col-2):
+            if valley[self.pos[0]+1, self.pos[1]] == 0:
+                # move south
+                moves.append((self.pos[0]+1, self.pos[1]))
         if valley[self.pos[0], self.pos[1]-1] == 0:
             # move west
             moves.append((self.pos[0], self.pos[1]-1))
@@ -95,7 +98,7 @@ def parsing(data):
 
     return blizzards, valley
 
-def next_round(blizzards, valley, expeditions):
+def next_round(blizzards, valley, expeditions, goal):
     new_valley = get_valley(valley.shape[0], valley.shape[1])
 
     end = False
@@ -107,17 +110,15 @@ def next_round(blizzards, valley, expeditions):
     new_expeditions = set()
     for E in expeditions:
         moves = E.list_moves(new_valley)
-        print(moves)
-        if len(moves) == 0:
-            print('no moves possible')
-        else :
+        # print(moves)
+        if len(moves) != 0:
             for k in range(len(moves)):
                 E_new = Expedition(moves[k], E.mi + 1)
                 E_new.hist = E.hist.copy()
                 E_new.hist.append(moves[k])
                 new_valley[E_new.pos] = -1
                 new_expeditions.add(E_new)
-                if E_new.pos == (valley.shape[0]-1, valley.shape[1]-2):
+                if E_new.pos == goal:
                     end = True
 
     new_expeditions.union(expeditions)
@@ -125,8 +126,8 @@ def next_round(blizzards, valley, expeditions):
     return new_valley, new_expeditions, end
 
 if __name__ == '__main__':
-    # data = aoc.get_input('input.txt')                                  
-    data = aoc.get_input('input2.txt')
+    data = aoc.get_input('input.txt')                                  
+    # data = aoc.get_input('input2.txt')
     # data = aoc.get_input('input3.txt')
     
     # Part I
@@ -135,13 +136,13 @@ if __name__ == '__main__':
     E = Expedition((0,1), 0)
     expeditions.add(E)
     valley[0,1] = -1
-    print(valley)
+    goal = (valley.shape[0]-1, valley.shape[1]-2)
 
-    rounds = 20
+    rounds = 400
     for r in range(rounds):
         print(f'Round {r+1}:')
-        valley, expeditions, end = next_round(blizzards, valley, expeditions)
-        print(valley)
+        valley, expeditions, end = next_round(blizzards, valley, expeditions,
+                goal)
 
         if end:
             break
@@ -149,3 +150,56 @@ if __name__ == '__main__':
     print(f'Part I: Expedition reached the goal in round {r+1}')
 
     # Part II
+    blizzards, valley = parsing(data)
+    
+    start = (0,1)
+    goal = (valley.shape[0]-1, valley.shape[1]-2)
+    
+    expeditions = set()
+    E = Expedition(start, 0)
+    expeditions.add(E)
+    # valley[start] = -1
+
+    tot_min = 0
+
+    rounds = 400
+    for r in range(rounds):
+        print(f'Round {r+1}:')
+        valley, expeditions, end = next_round(blizzards, valley, expeditions,
+                goal)
+
+        if end:
+            tot_min += r + 1
+            break
+
+    expeditions = set()
+    E = Expedition(goal, 0)
+    expeditions.add(E)
+    # valley[goal] = -1
+
+    rounds = 400
+    for r in range(rounds):
+        print(f'Round {r+1}:')
+        valley, expeditions, end = next_round(blizzards, valley, expeditions,
+                start)
+
+        if end:
+            tot_min += r + 1
+            break
+
+    expeditions = set()
+    E = Expedition(start, 0)
+    expeditions.add(E)
+    # valley[start] = -1
+
+    rounds = 400
+    for r in range(rounds):
+        print(f'Round {r+1}:')
+        valley, expeditions, end = next_round(blizzards, valley, expeditions,
+                goal)
+
+        if end:
+            tot_min += r + 1
+            break
+
+    print(f'Part II: Expedition reached the goal in round {tot_min}')
