@@ -24,13 +24,13 @@ def parsing(data):
     for line in lines:
         words = line.split()
         costs = []
-        cost = np.array([int(words[6]), 0, 0, 0], dtype=int)
+        cost = np.array([int(words[6]), 0, 0], dtype=int)
         costs.append(cost)
-        cost = np.array([int(words[12]), 0, 0, 0], dtype=int)
+        cost = np.array([int(words[12]), 0, 0], dtype=int)
         costs.append(cost)
-        cost = np.array([int(words[18]), int(words[21]), 0, 0], dtype=int)
+        cost = np.array([int(words[18]), int(words[21]), 0], dtype=int)
         costs.append(cost)
-        cost = np.array([int(words[27]), 0, int(words[30]), 0], dtype=int)
+        cost = np.array([int(words[27]), 0, int(words[30])], dtype=int)
         costs.append(cost)
         bluep = Blueprint(costs)
         blueprints.append(bluep)
@@ -46,7 +46,7 @@ def comp_geodes(bluep, time):
 
     # total number of linear constraints 
     # b_l <= A @ x <= b_u
-    num_constr = 5*(time - 1)
+    num_constr = 4*(time - 1)
     A = np.zeros( (num_constr, len(values)))
     b_u = np.zeros(num_constr)
     b_l = np.full_like(b_u, -np.inf)
@@ -76,7 +76,7 @@ def comp_geodes(bluep, time):
         A[2*(time-1)+n, 2*(time-1):2*(time-1)+n+1] = bluep.obs_rob[1]
         A[2*(time-1)+n, 3*(time-1):3*(time-1)+n+1] = bluep.geo_rob[1]
 
-    # enforce clay budget at every minute
+    # enforce obsidian budget at every minute
     for n in range(time-1):
         prod = np.arange(-1,n)
         prod[0] = 0
@@ -84,15 +84,6 @@ def comp_geodes(bluep, time):
         A[3*(time-1)+n,    time-1 :   time-1 +n+1] = bluep.clay_rob[2]
         A[3*(time-1)+n, 2*(time-1):2*(time-1)+n+1] = -prod[::-1]+bluep.obs_rob[2]
         A[3*(time-1)+n, 3*(time-1):3*(time-1)+n+1] = bluep.geo_rob[2]
-    
-    # enforce clay budget at every minute
-    for n in range(time-1):
-        prod = np.arange(-1,n)
-        prod[0] = 0
-        A[4*(time-1)+n,     0     :           n+1] = bluep.ore_rob[3] 
-        A[4*(time-1)+n,    time-1 :   time-1 +n+1] = bluep.clay_rob[3]
-        A[4*(time-1)+n, 2*(time-1):2*(time-1)+n+1] = bluep.obs_rob[3]
-        A[4*(time-1)+n, 3*(time-1):3*(time-1)+n+1] = -prod[::-1]+bluep.geo_rob[3]
 
     # print(A)
     # print(b_u)
@@ -106,7 +97,7 @@ def comp_geodes(bluep, time):
                         bounds=bounds)
    
     if not res.success:
-        print("No success!")
+        print("MILP: No success in solving integer program!")
 
     return -values@res.x, res.x
 
