@@ -1,12 +1,20 @@
-""" Advent of Code 2022 -- Day 11 -- """
+""" Advent of Code 2023 -- Day XX -- """
 
+import sys
+sys.path.append('../../aux')
 import aoc
 # import numpy as np
 
 if __name__ == '__main__':
-    data = aoc.get_input('input.txt')                                  
-    # data = aoc.get_input('input2.txt')
     
     # Part I    
-    
+    data = aoc.get_input('input1.txt')                                  
+
+    ans1 = 0
+    print(f'Answer to part 1" {ans1}')
+
     # Part II
+    # data = aoc.get_input('input2.txt')
+    
+    ans2 = 0
+    print(f'Answer to part 2" {ans2}')
