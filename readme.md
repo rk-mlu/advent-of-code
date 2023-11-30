@@ -1,7 +1,7 @@
-# Advent of Code 2022
+# Advent of Code
 
-This repository contains a few of my solutions and, more likely, failed
-attempts to solve some of the puzzles for the [Advent of Code 2022][aoc].
+This repository contains a few of my solutions and (more sometimes) failed
+attempts to solve some of the puzzles for the [Advent of Code][aoc].
 
 All programs are written in Python.
 
