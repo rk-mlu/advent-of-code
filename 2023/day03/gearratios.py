@@ -77,23 +77,23 @@ def adj2star(lines, pos, width):
         for j in range(left, right+1):
             # print(lines[up][j])
             if lines[up][j] == '*':
-                print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
+                # print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
                 return True, (up,j)
     if low != pos[0]:
         for j in range(left, right+1):
             # print(lines[low][j])
             if lines[low][j] == '*':
-                print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
+                # print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
                 return True, (low,j)
     if pos[1] != left:
         # print(lines[pos[0]][left])
         if lines[pos[0]][left] == '*':
-            print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
+            # print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
             return True, (pos[0], left)
     if pos[1] + width -1 != right:
         # print(lines[pos[0]][right])
         if lines[pos[0]][right] == '*':
-            print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
+            # print(up, low, left, right, ':', lines[pos[0]][pos[1]:right])
             return True, (pos[0], right)
     
     return False, (-1, -1)
