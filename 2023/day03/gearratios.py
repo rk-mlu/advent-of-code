@@ -1,5 +1,6 @@
 """ Advent of Code 2023 -- Day 03 -- """
 
+from collections import defaultdict
 import sys
 sys.path.append('../../aux')
 import aoc
@@ -158,8 +159,7 @@ if __name__ == '__main__':
     # Part II
     # data = aoc.get_input('input2.txt')
     
-    pos_stars = set()
-    pos_double = dict()
+    pos_double = defaultdict(lambda: [])
 
     for j in range(N):
         i = 0
@@ -168,24 +168,11 @@ if __name__ == '__main__':
             i = ind+len(num)
             adj, pos = adj2star(lines, (j,ind), len(num))
             if adj:
-                if pos not in pos_stars:
-                    pos_stars.add(pos)
-                else :
-                    pos_double[pos] = []
-
-    for j in range(N):
-        i = 0
-        for num in nums[j]:
-            ind = lines[j].index(num, i)
-            i = ind+len(num)
-            adj, pos = adj2star(lines, (j,ind), len(num))
-            if pos in pos_double.keys():
-                pos_double[pos].append(int(num))
+                pos_double[pos] = pos_double[pos] + [int(num)]
 
     ans2 = 0
     for pos in pos_double.keys():
-        if len(pos_double[pos]) != 2:
-            print("error:", pos, pos_double[pos])
-        ans2 += pos_double[pos][0]*pos_double[pos][1]
+        if len(pos_double[pos]) == 2:
+            ans2 += pos_double[pos][0]*pos_double[pos][1]
 
     print(f'Answer to part 2: {ans2}')
