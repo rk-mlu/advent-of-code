@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     # Part I    
     data = aoc.get_input('input1.txt')                                  
-    lines = data.linesplit()
+    lines = data.splitlines()
 
     ans1 = 0
 
