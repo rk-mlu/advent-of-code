@@ -6,7 +6,7 @@ import aoc
 # import numpy as np
 
 def parsing(data):
-    # write parser of input data    
+    # parser for the input data    
     lines = data.splitlines()
 
     return lines
