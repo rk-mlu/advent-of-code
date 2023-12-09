@@ -77,7 +77,7 @@ if __name__ == '__main__':
         step_list.append(steps)
 
     # turns out, that number of steps to first Z is also the period for each
-    # position. So the total number of steps it the least common multiple of
+    # position. So the total number of steps is the least common multiple of
     # each step number.
     ans2 = lcm(*step_list)
 
