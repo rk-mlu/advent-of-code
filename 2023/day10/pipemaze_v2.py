@@ -5,10 +5,10 @@ day = 10     # set day!
 import sys
 sys.path.append('../../aux')
 import aoc
-# import numpy as np
+import numpy as np
 import matplotlib.path as mpltPath
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+# import matplotlib.pyplot as plt
+# import matplotlib.patches as patches
 
 def parsing(data):
     # parser for the input data    
@@ -127,21 +127,23 @@ if __name__ == '__main__':
 
     path = mpltPath.Path(polygon)
 
-    ans2 = 0
+    candidates = []
 
     for j in range(N):
         for i in range(M):
             if (j,i) in polygon:
                 # skip all tiles which are part of the loop
                 continue
-            if path.contains_points([(j,i)]):
-                ans2 += 1
-
-    fig, ax = plt.subplots()
-    patch = patches.PathPatch(path, facecolor='orange', lw=2)
-    ax.add_patch(patch)
-    ax.set_xlim(-1, M)
-    ax.set_ylim(-1, N)
-    plt.show()
+            candidates.append((j,i))
+    enclosed = path.contains_points(candidates)
+    ans2 = np.count_nonzero(enclosed)
+    
+    # to create the plot of the maze
+    # fig, ax = plt.subplots()
+    # patch = patches.PathPatch(path, facecolor='orange', lw=2)
+    # ax.add_patch(patch)
+    # ax.set_xlim(-1, M)
+    # ax.set_ylim(-1, N)
+    # plt.show()
     
     print(f'Answer to part 2: {ans2}')
