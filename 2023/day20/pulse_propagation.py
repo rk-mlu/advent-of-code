@@ -40,8 +40,15 @@ class ComModule:
             self.state = dict()
 
     def __str__(self):
-        s = f'Node {self.lab} is a {self.type} module relaying to {self.dests}.\n'
-        s+= f'Preds are {self.preds}'
+        s = f'Node {self.lab} is {self.type}'
+        if self.type == 'None':
+            s += f' with dests {self.dests}.'
+        if self.type == '%':
+            s += f' with state {self.state} and dests {self.dests}'
+        if self.type == '&':
+            s += ' with states '
+            for p in self.state.keys():
+                s+= f'({p}, {self.state[p]}) '
         return s
     
     def process_pulse(self, orig, hl):
@@ -98,44 +105,36 @@ def det_preds(network):
                 network[node].state[p] = 0
 
 def part2(network):
-    dest_dh = []
-    dest_mk = []
-    dest_vf = []
-    dest_rn = []
+    periods = dict()
     j = 0
     while True:
         Q = [('button', 'broadcaster', 0)]
         j += 1
-        dest_rx = []
 
         while len(Q) > 0:
             pulse = Q.pop(0)
 
             new_pulses = network[pulse[1]].process_pulse(pulse[0],pulse[2])
             for p in new_pulses:
-                if p[1] == 'rx':
-                    dest_rx.append(p)
-                if p[1] == 'dh' and p[2]==1:
-                    dest_dh.append(j)
-                if p[1] == 'mk' and p[2]==1:
-                    dest_mk.append(j)
-                if p[1] == 'vf' and p[2]==1:
-                    dest_vf.append(j)
-                if p[1] == 'rn' and p[2]==1:
-                    dest_rn.append(j)
+                if p[0] == 'dh' and p[1] == 'jz' and p[2]==1 and 'dh' not in periods.keys():
+                    periods['dh'] = j
+                if p[0] == 'mk' and p[1] == 'jz' and p[2]==1 and 'mk' not in periods.keys():
+                    periods['mk'] = j
+                if p[0] == 'vf' and p[1] == 'jz' and p[2]==1 and 'vf' not in periods.keys():
+                    periods['vf'] = j
+                if p[0] == 'rn' and p[1] == 'jz' and p[2]==1 and 'rn' not in periods.keys():
+                    periods['rn'] = j
 
             Q = Q + new_pulses
             
-        if len(dest_rx) > 0:
-            for p in dest_rx:
-                if p[2] == 0:
-                    print(j, dest_rx)
-            if len(dest_rx) == 1 and dest_rx[0][2] == 0:
-                break
-        if len(dest_rn) > 100:
-            print(dest_dh, dest_mk, dest_vf, dest_rn) 
+        if len(list(periods.keys())) == 4:
             break
-    return j
+
+    p = 1
+    for n in ['dh', 'mk', 'vf', 'rn']:
+        p *= periods[n]
+            
+    return p
 
 
 if __name__ == '__main__':
@@ -180,7 +179,7 @@ if __name__ == '__main__':
         network[m[0]] = ComModule(m)
 
     det_preds(network)
-    
+
     ans2 = part2(network)
 
     print(f'Answer to part 2: {ans2}')
