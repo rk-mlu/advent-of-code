@@ -2,3 +2,4 @@ advent-of-code-data>=2.0.1
 matplotlib
 numpy
 scipy>=1.10.0
+sympy>=1.9
