@@ -5,8 +5,8 @@ day = 19     # set day!
 import sys
 sys.path.append('../../aux')
 import aoc
-# import numpy as np
-from itertools import product
+import numpy as np
+# from itertools import product
 
 def parsing(data):
     # parser for the input data    
@@ -62,13 +62,96 @@ def process_part(part, state, workflows):
             else :
                 print(cond[1])
 
+def part2(lim, wf):
+
+    state = 'in'
+    interval = np.array([1, lim, 1, lim, 1, lim, 1, lim], dtype=int)
+   
+    Q = [(state, interval)]
+    accepted = []
+    rejected = []
+    
+    while len(Q) > 0:
+        st, ival = Q.pop(0)
+        
+        res = apply_rules(st, ival, wf)
+
+        for s, new_ival in res:
+            if s == 'A':
+                accepted.append(new_ival)
+            elif s == 'R':
+                rejected.append(new_ival)
+            else :
+                Q.append((s, new_ival))
+
+    print(accepted)
+
+    ans2 = 0
+    for ival in accepted:
+        p = 1
+        for j in range(4):
+            p *= (ival[2*j+1] - ival[2*j] + 1)
+            if p <= 0:
+                print(p)
+        ans2 += p
+    ans2b = 0
+    for ival in rejected:
+        p = 1
+        for j in range(4):
+            p *= (ival[2*j+1] - ival[2*j] + 1)
+        ans2b += p
+    print(4000**4-ans2-ans2b)
+    return ans2
+    
+
+def apply_rules(state, ival, wf):
+
+    done = []
+
+    # if state == 'A':
+    #     done.append(('A', ival))
+    # elif state == 'R':
+    #     done.append(('R', ival))
+    # else :
+    ind = dict()
+    ind['x'] = 0
+    ind['m'] = 1
+    ind['a'] = 2
+    ind['s'] = 3
+
+    for rule in wf[state]:
+        if ':' in rule:
+            cond, new_state = rule.split(':')
+            i = ind[cond[0]]
+            bound = int(cond[2:])
+            ival1 = ival.copy()
+            
+            if cond[1] == '>':
+                ival1[2*i] = max(ival1[2*i], bound + 1)
+                
+                if ival1[2*i] <= ival1[2*i+1]:
+                    done.append((new_state, ival1))
+                    ival[2*i+1] = bound
+
+            if cond[1] == '<':
+                ival1[2*i+1] = min(ival1[2*i+1], bound - 1)
+                
+                if ival1[2*i] <= ival1[2*i+1]:
+                    done.append((new_state, ival1))
+                    ival[2*i] = bound
+
+        else :
+            done.append((rule, ival))
+            
+    return done
+
 
 if __name__ == '__main__':
-    # data = aoc.dl_data(day, year, 'input1.txt')                                  
-    data = aoc.get_input('input2.txt')
+    data = aoc.dl_data(day, year, 'input1.txt')                                  
+    # data = aoc.get_input('input2.txt')
     
     wf, parts = parsing(data)
-
+    
     # Part I    
 
     ans1 = 0
@@ -81,17 +164,8 @@ if __name__ == '__main__':
 
     # Part II
     
-    ans2 = 0
-    x = 1
-    p=dict()
-    # for (x,m,a,s) in product(range(1,4001), repeat=4):
-    for (m,a,s) in product(range(1,4001), repeat=3):
-        p['x'] = x
-        p['m'] = m
-        p['a'] = a
-        p['s'] = s
-        # print(p)
-        if process_part(p, 'in', wf):
-            ans2 += p['x'] + p['m'] + p['a'] + p['s']
+    lim = 4000
 
+    ans2 = part2(lim, wf)
+        
     print(f'Answer to part 2: {ans2}')
