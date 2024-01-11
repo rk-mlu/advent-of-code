@@ -3,8 +3,8 @@
 This repository contains a few of my solutions to some of the puzzles from the
 [Advent of Code][aoc].
 
-Advent of Code is created by Eric Wastl (@topaz) and is an Advent calendar
-consisting of programming puzzles released daily in December.
+Advent of Code is created by [Eric Wastl](https://github.com/topaz) and is
+an Advent calendar consisting of programming puzzles released daily in December.
 The design of the puzzle and the puzzle inputs are the work of Eric Wastl.
 
 The solution (attempts) found in this repository are all written in Python.
