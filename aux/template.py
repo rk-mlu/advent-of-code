@@ -1,6 +1,6 @@
-""" Advent of Code 2023 -- Day XX -- """
-year = 2023
-day = XX     # set day!
+""" Advent of Code 2024 -- Day XX -- """
+year = 2024
+day = X     # set day!
 
 import sys
 sys.path.append('../../aux')
