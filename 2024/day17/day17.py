@@ -6,7 +6,7 @@ import sys
 sys.path.append('../../aux')
 import aoc
 # import numpy as np
-from collections import Counter
+from collections import defaultdict
 from itertools import product
 
 def parsing(data):
@@ -117,51 +117,63 @@ if __name__ == '__main__':
     print(f'Answer to part 1: {ans1}')
 
     # Part II
-    
-    ans2 = 0
-    print(program)
+
+    ans2 = set()
+    lp = len(program)
     prog = prog2str(program)
 
     k = 5
     num_bits = 0
-    A_list = [0]
+    A_list = set([0])
 
-    while k <= 16:
-        next_bit = []
-         
-        
-        for j, A in product(range(8**(k-num_bits)*2**6), A_list):
-            A += j*8**num_bits
-            regs2 = [A, 0, 0]
+    while k <= lp:
+        next_bit = defaultdict(int)
+        total = 0
+        A_list2 = set()
+
+        for j, A in product(range(8**(k-num_bits)*2**5), A_list):
+            regs2 = [A + j*8**num_bits, 0, 0]
             comp2 = computer(regs2)
-            out2 = comp2.run(program)
-
-            # print(out2[:2])
-            # print(prog[:2])
+            out2  = comp2.run(program)
 
             if out2.startswith(prog[:2*k-1]):
                 # print(regs2[0], out2)
                 bits = show_3bits(regs2[0])
-                next_bit.append(bits[num_bits])
+                next_bit[bits[num_bits]] += 1
+                total += 1
+                A_list2.add(A)
+            if out2 == prog:
+                ans2.add(regs2[0])
+        
+        if len(ans2) > 0:
+            break
 
-        c = Counter(next_bit)
-        cands = c.most_common()
-        print(cands)
+        cands = next_bit.items()
         cand_bits = []
         for cand in cands:
-            if cand[1] > c.total()//10:
+            if cand[1] > total//10:
                 cand_bits.append(cand[0])
         
-        A_list_new = []
+        A_list_new = set()
     
-        for A in A_list:
+        for A in A_list2:
             for r in cand_bits:
-                A_list_new.append(A + r*8**num_bits)
+                A_list_new.add(A + r*8**num_bits)
         
         num_bits += 1
         k += 1
         A_list = A_list_new
-        print(A_list)
+        print(k, A_list)
 
+    ans2 = list(ans2)
+    ans2.sort()
     
-    print(f'Answer to part 2: {ans2}')
+    # verify
+    prog = prog2str(program)
+    print(f"to find: {prog}")
+    regs2 = [ans2[0], 0, 0]
+    comp = computer(regs2)
+    out = comp.run(program)
+    print(out)
+
+    print(f'Answer to part 2: {ans2[0]}')
