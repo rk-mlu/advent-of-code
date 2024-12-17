@@ -77,12 +77,9 @@ class computer:
         
         while self.valid and self.pt < N - 1:
             opcode, operand = program[self.pt], program[self.pt+1]
-            # print(opcode, operand)
             self.instruction(opcode, operand)
             self.pt += 2
 
-        # out = "".join([str(n) + ',' for n in self.out[:-1]])
-        # out += str(self.out[-1])
         if self.valid:
             return prog2str(self.out)
         else :
@@ -102,9 +99,10 @@ def show_3bits(j):
 
 
 if __name__ == '__main__':
-    data = aoc.dl_data(day, year, 'input1.txt')                                  
+    # data = aoc.dl_data(day, year, 'input1.txt')                                  
     # data = aoc.get_input('input2.txt')
     # data = aoc.get_input('input3.txt')
+    data = aoc.get_input('input4.txt')
     
     regs, program = parsing(data)
     
@@ -131,7 +129,7 @@ if __name__ == '__main__':
         total = 0
         A_list2 = set()
 
-        for j, A in product(range(8**(k-num_bits)*2**5), A_list):
+        for j, A in product(range(8**(k-num_bits)*2**6), A_list):
             regs2 = [A + j*8**num_bits, 0, 0]
             comp2 = computer(regs2)
             out2  = comp2.run(program)
