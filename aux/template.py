@@ -1,6 +1,6 @@
-""" Advent of Code 2024 -- Day XX -- """
-year = 2024
-day = X     # set day!
+""" Advent of Code 2025 -- Day X -- """
+year = 2025
+day = X         # set day!
 
 import sys
 sys.path.append('../../aux')
@@ -15,7 +15,7 @@ def parsing(data):
 
 if __name__ == '__main__':
     data = aoc.dl_data(day, year, 'input1.txt')                                  
-    # data = aoc.get_input('input2.txt')
+    # data = aoc.get_input('input0.txt')
     
     lines = parsing(data)
 
